@@ -17,6 +17,7 @@ import { OrderList } from './components/marketplace/OrderList';
 import { OrderDetail } from './components/marketplace/OrderDetail';
 import { OrderRequestList } from './components/marketplace/OrderRequestList';
 import { OrderRequestDetail } from './components/marketplace/OrderRequestDetail';
+import { PatternsPage } from './components/patterns/PatternsPage';
 import NotFound from './pages/not-found';
 import '@fontsource/inter';
 import './index.css';
@@ -80,6 +81,9 @@ function App() {
               <Route path="requests" element={<OrderRequestList />} />
               <Route path="request" element={<OrderRequestDetail />} />
             </Route>
+            
+            {/* Patterns routes */}
+            <Route path="/patterns/*" element={<PatternsPage />} />
             
             {/* Not found route */}
             <Route path="/404" element={<NotFound />} />

@@ -7,6 +7,7 @@ const Header = () => {
   const location = useLocation();
   const isHome = location.pathname === '/';
   const isMarketplace = location.pathname.includes('/marketplace');
+  const isPatterns = location.pathname.includes('/patterns');
   
   return (
     <header className="h-14 bg-white border-b border-gray-200 px-4 flex items-center justify-between">
@@ -19,7 +20,7 @@ const Header = () => {
         <nav className="hidden md:flex space-x-4">
           <NavLink to="/" label="Designs" active={isHome} />
           <NavLink to="/marketplace" label="Marketplace" active={isMarketplace} />
-          <NavLink to="#" label="Patterns" />
+          <NavLink to="/patterns" label="Patterns" active={isPatterns} />
           <NavLink to="#" label="Collections" />
           <NavLink to="#" label="Materials" />
         </nav>
