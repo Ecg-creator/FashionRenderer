@@ -73,6 +73,13 @@ export function PatternDetail() {
         </div>
         
         <div className="flex space-x-2 mt-4 sm:mt-0">
+          <Button 
+            onClick={() => navigate(`/patterns/${patternId}/customize`)}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+            size="sm"
+          >
+            Customize Pattern
+          </Button>
           <Button variant="outline" size="sm">
             <FiPrinter className="mr-1 h-4 w-4" />
             Print

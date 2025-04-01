@@ -242,6 +242,7 @@ interface PatternNFTCardProps {
 
 function PatternNFTCard({ pattern, onClick }: PatternNFTCardProps) {
   const [isLiked, setIsLiked] = useState(false);
+  const navigate = useNavigate();
   
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -299,10 +300,21 @@ function PatternNFTCard({ pattern, onClick }: PatternNFTCardProps) {
             <p className="text-base font-bold text-gray-900">${pattern.price} <span className="text-xs font-normal text-gray-500">USD</span></p>
           </div>
           
-          <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700">
-            <FiShoppingCart className="mr-1 h-3 w-3" />
-            Buy Now
-          </Button>
+          <div className="flex space-x-1">
+            <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 px-2">
+              <FiShoppingCart className="h-3 w-3" />
+            </Button>
+            <Button 
+              size="sm" 
+              className="bg-blue-600 hover:bg-blue-700"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/patterns/${pattern.id}/customize`);
+              }}
+            >
+              Customize
+            </Button>
+          </div>
         </div>
         
         <div className="mt-3 pt-3 border-t border-gray-100 flex items-center text-xs text-gray-500 justify-between">
@@ -318,6 +330,7 @@ function PatternNFTCard({ pattern, onClick }: PatternNFTCardProps) {
 }
 
 function PatternNFTListItem({ pattern, onClick }: PatternNFTCardProps) {
+  const navigate = useNavigate();
   return (
     <div 
       className="bg-white rounded-lg shadow-sm p-4 border border-gray-200 hover:border-indigo-400 transition-colors cursor-pointer flex"
@@ -351,10 +364,21 @@ function PatternNFTListItem({ pattern, onClick }: PatternNFTCardProps) {
               {pattern.available} available
             </div>
             <p className="text-base font-bold text-gray-900">${pattern.price}</p>
-            <Button size="sm" className="mt-2 bg-indigo-600 hover:bg-indigo-700">
-              <FiShoppingCart className="mr-1 h-3 w-3" />
-              Buy Now
-            </Button>
+            <div className="flex mt-2 space-x-1">
+              <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 px-2">
+                <FiShoppingCart className="h-3 w-3" />
+              </Button>
+              <Button 
+                size="sm" 
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/patterns/${pattern.id}/customize`);
+                }}
+              >
+                Customize
+              </Button>
+            </div>
           </div>
         </div>
         
