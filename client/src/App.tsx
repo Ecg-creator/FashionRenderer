@@ -18,6 +18,7 @@ import { OrderDetail } from './components/marketplace/OrderDetail';
 import { OrderRequestList } from './components/marketplace/OrderRequestList';
 import { OrderRequestDetail } from './components/marketplace/OrderRequestDetail';
 import { PatternsPage } from './components/patterns/PatternsPage';
+import { GameShowcaseWithUI } from './components/game/GameShowcase';
 import NotFound from './pages/not-found';
 import '@fontsource/inter';
 import './index.css';
@@ -84,6 +85,9 @@ function App() {
             
             {/* Patterns routes */}
             <Route path="/patterns/*" element={<PatternsPage />} />
+            
+            {/* Game Showcase route */}
+            <Route path="/showcase" element={<GameShowcaseWithUI />} />
             
             {/* Not found route */}
             <Route path="/404" element={<NotFound />} />

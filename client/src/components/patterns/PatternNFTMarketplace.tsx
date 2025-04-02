@@ -78,7 +78,17 @@ export function PatternNFTMarketplace() {
     <div className="container mx-auto py-8 px-4">
       <div className="flex flex-col space-y-6">
         <div className="flex flex-col space-y-4">
-          <h1 className="text-3xl font-bold text-gray-900">Digital Pattern Collection</h1>
+          <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-bold text-gray-900">Digital Pattern Collection</h1>
+            <Button 
+              onClick={() => navigate('/patterns/files')}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <FiFilter className="h-4 w-4" />
+              Pattern Files
+            </Button>
+          </div>
           <p className="text-gray-600">Exclusive digital pattern NFTs for your next fashion creation. Each pattern is unique, verified on blockchain, and comes with full commercial rights.</p>
         </div>
         
