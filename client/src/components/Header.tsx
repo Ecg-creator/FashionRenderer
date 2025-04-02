@@ -1,4 +1,4 @@
-import { FiShoppingBag, FiUser, FiSearch, FiHelpCircle, FiPackage, FiChevronDown, FiFilter, FiGrid, FiMap, FiDatabase, FiLayout, FiCode } from 'react-icons/fi';
+import { FiShoppingBag, FiUser, FiSearch, FiHelpCircle, FiPackage, FiChevronDown, FiFilter, FiGrid, FiMap, FiDatabase, FiLayout, FiCode, FiKey, FiCreditCard } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLocation, Link } from 'react-router-dom';
@@ -20,6 +20,7 @@ const Header = () => {
   const isVirtualSilkRoad = location.pathname.includes('/virtual-silk-road');
   const isArchitecture = location.pathname.includes('/documentation/architecture');
   const isHsn = location.pathname.includes('/hsn');
+  const isLicensing = location.pathname.includes('/licensing');
   
   return (
     <header className="h-14 bg-white border-b border-gray-200 px-4 flex items-center justify-between">
@@ -70,7 +71,7 @@ const Header = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className={`text-sm px-3 py-1 rounded-md flex items-center ${
-                  isDashboard || isVirtualSilkRoad || isArchitecture || isHsn
+                  isDashboard || isVirtualSilkRoad || isArchitecture || isHsn || isLicensing
                     ? 'bg-[#F8F9FA] text-[#0047AB] font-medium' 
                     : 'text-[#2C3E50] hover:bg-[#F8F9FA]'
                 }`}>
@@ -94,6 +95,12 @@ const Header = () => {
                   <Link to="/hsn" className="flex items-center cursor-pointer">
                     <FiDatabase className="mr-2 h-4 w-4" />
                     <span>HSN Integration</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/licensing" className="flex items-center cursor-pointer">
+                    <FiKey className="mr-2 h-4 w-4" />
+                    <span>License Management</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
@@ -129,9 +136,35 @@ const Header = () => {
           <FiHelpCircle className="h-5 w-5" />
         </Button>
         
-        <Button variant="ghost" size="icon" className="text-[#2C3E50]">
-          <FiUser className="h-5 w-5" />
-        </Button>
+        <div className="relative">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-[#2C3E50]">
+                <FiUser className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem asChild>
+                <Link to="/profile" className="flex items-center cursor-pointer">
+                  <FiUser className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/licensing" className="flex items-center cursor-pointer">
+                  <FiKey className="mr-2 h-4 w-4" />
+                  <span>License Management</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/billing" className="flex items-center cursor-pointer">
+                  <FiCreditCard className="mr-2 h-4 w-4" />
+                  <span>Billing</span>
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </header>
   );

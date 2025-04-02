@@ -24,6 +24,7 @@ import Dashboard from './components/dashboard/Dashboard';
 import VirtualSilkRoad from './components/immersive/VirtualSilkRoad';
 import { ArchitectureDiagram } from './components/documentation/ArchitectureDiagram';
 import HSNCodeIntegration from './components/hsn/HSNCodeIntegration';
+import LicenseDashboard from './components/licensing/LicenseDashboard';
 import NotFound from './pages/not-found';
 import '@fontsource/inter';
 import './index.css';
@@ -108,6 +109,10 @@ function App() {
             
             {/* HSN Code Integration */}
             <Route path="/hsn" element={<HSNCodeIntegration />} />
+            
+            {/* License Management */}
+            <Route path="/licensing" element={<LicenseDashboard />} />
+            <Route path="/licensing/:licenseId" element={<LicenseDashboard />} />
             
             {/* Not found route */}
             <Route path="/404" element={<NotFound />} />

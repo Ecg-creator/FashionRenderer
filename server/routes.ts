@@ -1,9 +1,13 @@
-import express, { type Express, type Request, type Response } from "express";
+import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import fs from "fs";
 import path from "path";
 import fileUpload from "express-fileupload";
+import { db } from "./db";
+import * as schema from "../shared/schema";
+import * as licenseSchema from "../shared/licenseSchema";
+import { eq, and, gte, lte, asc } from "drizzle-orm";
 
 // Create upload directory if it doesn't exist
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -12,6 +16,81 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // License Management API Routes
+  app.get("/api/licenses", async (_req: Request, res: Response) => {
+    try {
+      // Fetch all licenses
+      // In a real implementation, this would likely be paginated and filtered
+      const licenses = await db.query.licenses.findMany();
+      res.json(licenses);
+    } catch (error) {
+      console.error("Error fetching licenses:", error);
+      res.status(500).json({ error: "Failed to fetch licenses" });
+    }
+  });
+
+  app.get("/api/licenses/:id", async (req: Request, res: Response) => {
+    try {
+      const licenseId = parseInt(req.params.id);
+      const license = await db.query.licenses.findFirst({
+        where: eq(licenseSchema.licenses.id, licenseId)
+      });
+      
+      if (!license) {
+        return res.status(404).json({ error: "License not found" });
+      }
+      
+      res.json(license);
+    } catch (error) {
+      console.error(`Error fetching license ${req.params.id}:`, error);
+      res.status(500).json({ error: "Failed to fetch license details" });
+    }
+  });
+
+  app.get("/api/licenses/:id/users", async (req: Request, res: Response) => {
+    try {
+      const licenseId = parseInt(req.params.id);
+      const users = await db.query.licenseUsers.findMany({
+        where: eq(licenseSchema.licenseUsers.licenseId, licenseId)
+      });
+      
+      res.json(users);
+    } catch (error) {
+      console.error(`Error fetching users for license ${req.params.id}:`, error);
+      res.status(500).json({ error: "Failed to fetch license users" });
+    }
+  });
+
+  app.get("/api/licenses/:id/usage", async (req: Request, res: Response) => {
+    try {
+      const licenseId = parseInt(req.params.id);
+      const startDate = req.query.start ? new Date(req.query.start as string) : undefined;
+      const endDate = req.query.end ? new Date(req.query.end as string) : undefined;
+      
+      let usageStats;
+      
+      if (startDate && endDate) {
+        usageStats = await db.query.licenseUsageStats.findMany({
+          where: and(
+            eq(licenseSchema.licenseUsageStats.licenseId, licenseId),
+            gte(licenseSchema.licenseUsageStats.date, startDate),
+            lte(licenseSchema.licenseUsageStats.date, endDate)
+          ),
+          orderBy: asc(licenseSchema.licenseUsageStats.date)
+        });
+      } else {
+        usageStats = await db.query.licenseUsageStats.findMany({
+          where: eq(licenseSchema.licenseUsageStats.licenseId, licenseId),
+          orderBy: asc(licenseSchema.licenseUsageStats.date)
+        });
+      }
+      
+      res.json(usageStats);
+    } catch (error) {
+      console.error(`Error fetching usage stats for license ${req.params.id}:`, error);
+      res.status(500).json({ error: "Failed to fetch license usage statistics" });
+    }
+  });
   // Setup file upload middleware
   app.use(fileUpload({
     createParentPath: true,
