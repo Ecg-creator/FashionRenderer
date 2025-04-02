@@ -1,4 +1,4 @@
-import { FiShoppingBag, FiUser, FiSearch, FiHelpCircle, FiPackage, FiChevronDown, FiFilter, FiGrid } from 'react-icons/fi';
+import { FiShoppingBag, FiUser, FiSearch, FiHelpCircle, FiPackage, FiChevronDown, FiFilter, FiGrid, FiMap, FiDatabase, FiLayout, FiCode } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLocation, Link } from 'react-router-dom';
@@ -16,6 +16,10 @@ const Header = () => {
   const isPatterns = location.pathname.includes('/patterns');
   const isMaterials = location.pathname.includes('/materials');
   const isShowcase = location.pathname.includes('/showcase');
+  const isDashboard = location.pathname.includes('/dashboard');
+  const isVirtualSilkRoad = location.pathname.includes('/virtual-silk-road');
+  const isArchitecture = location.pathname.includes('/documentation/architecture');
+  const isHsn = location.pathname.includes('/hsn');
   
   return (
     <header className="h-14 bg-white border-b border-gray-200 px-4 flex items-center justify-between">
@@ -58,9 +62,49 @@ const Header = () => {
             </DropdownMenu>
           </div>
           
-          <NavLink to="#" label="Collections" />
           <NavLink to="/materials" label="Materials" active={isMaterials} />
           <NavLink to="/showcase" label="3D Showcase" active={isShowcase} />
+          
+          {/* Platform Features Dropdown */}
+          <div className="relative flex items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className={`text-sm px-3 py-1 rounded-md flex items-center ${
+                  isDashboard || isVirtualSilkRoad || isArchitecture || isHsn
+                    ? 'bg-[#F8F9FA] text-[#0047AB] font-medium' 
+                    : 'text-[#2C3E50] hover:bg-[#F8F9FA]'
+                }`}>
+                  Platform <FiChevronDown className="ml-1 h-3 w-3" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-52">
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard" className="flex items-center cursor-pointer">
+                    <FiLayout className="mr-2 h-4 w-4" />
+                    <span>Dashboard</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/virtual-silk-road" className="flex items-center cursor-pointer">
+                    <FiMap className="mr-2 h-4 w-4" />
+                    <span>Virtual Silk Road</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/hsn" className="flex items-center cursor-pointer">
+                    <FiDatabase className="mr-2 h-4 w-4" />
+                    <span>HSN Integration</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/documentation/architecture" className="flex items-center cursor-pointer">
+                    <FiCode className="mr-2 h-4 w-4" />
+                    <span>System Architecture</span>
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </nav>
       </div>
       

@@ -20,6 +20,10 @@ import { OrderRequestDetail } from './components/marketplace/OrderRequestDetail'
 import { PatternsPage } from './components/patterns/PatternsPage';
 import { MaterialLibrary } from './components/materials/MaterialLibrary';
 import { GameShowcaseWithUI } from './components/game/GameShowcase';
+import Dashboard from './components/dashboard/Dashboard';
+import VirtualSilkRoad from './components/immersive/VirtualSilkRoad';
+import { ArchitectureDiagram } from './components/documentation/ArchitectureDiagram';
+import HSNCodeIntegration from './components/hsn/HSNCodeIntegration';
 import NotFound from './pages/not-found';
 import '@fontsource/inter';
 import './index.css';
@@ -92,6 +96,18 @@ function App() {
             
             {/* Game Showcase route */}
             <Route path="/showcase" element={<GameShowcaseWithUI />} />
+            
+            {/* Dashboard route */}
+            <Route path="/dashboard" element={<Dashboard />} />
+            
+            {/* Virtual Silk Road - 3D experience */}
+            <Route path="/virtual-silk-road" element={<VirtualSilkRoad />} />
+            
+            {/* Documentation routes */}
+            <Route path="/documentation/architecture" element={<ArchitectureDiagram />} />
+            
+            {/* HSN Code Integration */}
+            <Route path="/hsn" element={<HSNCodeIntegration />} />
             
             {/* Not found route */}
             <Route path="/404" element={<NotFound />} />

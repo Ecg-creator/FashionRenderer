@@ -1,351 +1,534 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Layers, 
-  Box, 
-  ShoppingBag, 
-  Truck, 
-  Grid, 
-  FileText, 
-  PieChart, 
-  Users,
-  Scissors,
-  Clock,
-  BarChart2,
-  Maximize
-} from 'lucide-react';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
-import { Progress } from '../ui/progress';
+import { FiActivity, FiBarChart2, FiBox, FiCalendar, FiDollarSign, FiGrid, FiMap, FiPackage, FiPieChart, FiShoppingBag, FiUsers, FiDatabase, FiCode } from 'react-icons/fi';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Badge } from "../ui/badge";
+import { Progress } from "../ui/progress";
+import { Button } from "../ui/button";
 
 interface DashboardMetric {
   title: string;
   value: string | number;
-  change: number;
+  change: string;
+  trend: 'up' | 'down' | 'neutral';
   icon: React.ReactNode;
 }
 
-interface Process {
+interface SystemComponent {
   id: string;
   name: string;
-  progress: number;
-  status: 'pending' | 'in-progress' | 'completed' | 'delayed';
-  dueDate: string;
+  description: string;
+  status: 'operational' | 'degraded' | 'outage' | 'maintenance';
+  icon: React.ReactNode;
+  path: string;
 }
 
-interface ActiveOrder {
-  id: string;
-  customer: string;
-  product: string;
-  status: string;
-  quantity: number;
-  delivery: string;
-}
-
-const Dashboard = () => {
-  const [view, setView] = useState<'grid' | 'timeline'>('grid');
-
+const Dashboard: React.FC = () => {
+  const [activePeriod, setActivePeriod] = useState<'daily' | 'weekly' | 'monthly'>('monthly');
+  
   const metrics: DashboardMetric[] = [
-    { 
-      title: 'Total Orders', 
-      value: 456, 
-      change: 12.5, 
-      icon: <ShoppingBag className="w-5 h-5 text-blue-600" /> 
-    },
-    { 
-      title: 'Material Utilization', 
-      value: '87%', 
-      change: 3.2, 
-      icon: <Layers className="w-5 h-5 text-green-600" /> 
-    },
-    { 
-      title: 'On-time Delivery', 
-      value: '94%', 
-      change: -1.8, 
-      icon: <Truck className="w-5 h-5 text-amber-600" /> 
-    },
-    { 
-      title: 'Product Mix', 
-      value: 32, 
-      change: 8.1, 
-      icon: <Grid className="w-5 h-5 text-purple-600" /> 
-    }
-  ];
-
-  const processes: Process[] = [
-    { 
-      id: 'p1', 
-      name: 'BORRIS Slim Fit - Sample Development', 
-      progress: 65, 
-      status: 'in-progress',
-      dueDate: '2025-04-15' 
-    },
-    { 
-      id: 'p2', 
-      name: 'TRACK SKINNY - Production Run', 
-      progress: 90, 
-      status: 'in-progress',
-      dueDate: '2025-04-10' 
-    },
-    { 
-      id: 'p3', 
-      name: 'WOODSMAN Collection - Material Sourcing', 
-      progress: 30, 
-      status: 'pending',
-      dueDate: '2025-04-30' 
-    },
-    { 
-      id: 'p4', 
-      name: 'ARTURO - Pattern Adjustments', 
-      progress: 100, 
-      status: 'completed',
-      dueDate: '2025-04-01' 
-    }
-  ];
-
-  const activeOrders: ActiveOrder[] = [
     {
-      id: 'ORD-8752',
-      customer: 'Fashion Brand Co.',
-      product: 'TRACK SKINNY',
-      status: 'Production',
-      quantity: 2500,
-      delivery: '2025-05-15'
+      title: 'Total Orders',
+      value: '245',
+      change: '+12.5%',
+      trend: 'up',
+      icon: <FiPackage className="h-5 w-5 text-blue-500" />
     },
     {
-      id: 'ORD-8745',
-      customer: 'Urban Styles Inc.',
-      product: 'BORRIS',
-      status: 'Sampling',
-      quantity: 50,
-      delivery: '2025-04-20'
+      title: 'Active Manufacturers',
+      value: '37',
+      change: '+5.3%',
+      trend: 'up',
+      icon: <FiUsers className="h-5 w-5 text-purple-500" />
     },
     {
-      id: 'ORD-8741',
-      customer: 'Premium Retail Ltd.',
-      product: 'WOODSMAN Collection',
-      status: 'Material Approval',
-      quantity: 1200,
-      delivery: '2025-06-10'
+      title: 'Pattern Sales',
+      value: '1,348',
+      change: '+22.4%',
+      trend: 'up',
+      icon: <FiGrid className="h-5 w-5 text-green-500" />
+    },
+    {
+      title: 'Revenue',
+      value: '$128,450',
+      change: '+8.1%',
+      trend: 'up',
+      icon: <FiDollarSign className="h-5 w-5 text-amber-500" />
+    },
+  ];
+  
+  const upcomingOrders = [
+    { id: 'OR-8721', customer: 'Zara', date: 'Apr 05, 2025', status: 'processing', amount: '$12,450' },
+    { id: 'OR-8654', customer: 'H&M', date: 'Apr 07, 2025', status: 'pending', amount: '$8,320' },
+    { id: 'OR-8547', customer: 'Gap Inc.', date: 'Apr 10, 2025', status: 'confirmed', amount: '$15,780' },
+    { id: 'OR-8432', customer: 'Levi Strauss', date: 'Apr 12, 2025', status: 'pending', amount: '$9,650' },
+  ];
+  
+  const topPatterns = [
+    { name: 'WOODSMAN F Collection', sales: 256, revenue: '$19,200', category: 'Menswear' },
+    { name: 'TRACK SKINNY', sales: 198, revenue: '$11,880', category: 'Streetwear' },
+    { name: 'BORRIS Slim Fit', sales: 182, revenue: '$12,740', category: 'Casual' },
+    { name: 'ARTURO Collection', sales: 145, revenue: '$10,875', category: 'Formal' },
+  ];
+  
+  const systemComponents: SystemComponent[] = [
+    {
+      id: 'garment-viewer',
+      name: 'Garment Viewer',
+      description: '3D visualization engine for garment design and customization',
+      status: 'operational',
+      icon: <FiBox />,
+      path: '/'
+    },
+    {
+      id: 'material-library',
+      name: 'Material Library',
+      description: 'Comprehensive database of fabrics and materials with technical specifications',
+      status: 'operational',
+      icon: <FiGrid />,
+      path: '/materials'
+    },
+    {
+      id: 'marketplace',
+      name: 'Marketplace',
+      description: 'Trading platform connecting designers, manufacturers and brands',
+      status: 'operational',
+      icon: <FiShoppingBag />,
+      path: '/marketplace'
+    },
+    {
+      id: 'virtual-silk-road',
+      name: 'Virtual Silk Road',
+      description: 'Immersive 3D world representing the entire fashion supply chain',
+      status: 'operational',
+      icon: <FiMap />,
+      path: '/virtual-silk-road'
+    },
+    {
+      id: 'hsn-integration',
+      name: 'HSN Integration',
+      description: 'Taxation logic through Harmonized System Nomenclature codes',
+      status: 'operational',
+      icon: <FiDatabase />,
+      path: '/hsn'
+    },
+    {
+      id: 'architecture',
+      name: 'System Architecture',
+      description: 'Modular block structure of the entire platform',
+      status: 'operational',
+      icon: <FiCode />,
+      path: '/documentation/architecture'
     }
   ];
-
-  const getStatusColor = (status: string) => {
-    switch(status.toLowerCase()) {
-      case 'pending':
-        return 'bg-amber-100 text-amber-800';
-      case 'in-progress':
-        return 'bg-blue-100 text-blue-800';
-      case 'completed':
-        return 'bg-green-100 text-green-800';
-      case 'delayed':
-        return 'bg-red-100 text-red-800';
-      case 'production':
-        return 'bg-purple-100 text-purple-800';
-      case 'sampling':
-        return 'bg-indigo-100 text-indigo-800';
-      case 'material approval':
-        return 'bg-cyan-100 text-cyan-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
+  
   return (
-    <div className="container mx-auto py-6 px-4">
-      <div className="flex justify-between items-center mb-8">
+    <div className="container mx-auto py-8 px-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Woven Supply Dashboard</h1>
-          <p className="text-gray-600 mt-1">
-            End-to-end management from idea to delivery
-          </p>
+          <h1 className="text-3xl font-bold mb-1">EmpireOS Dashboard</h1>
+          <p className="text-gray-500">Control center for your Virtual Silk Road ecosystem</p>
         </div>
-        <div className="flex space-x-2">
-          <Button variant="outline" size="sm">
-            <FileText className="w-4 h-4 mr-2" /> Reports
+        <div className="mt-4 md:mt-0 flex space-x-2">
+          <Button variant="outline" size="sm" className="flex items-center gap-1">
+            <FiCalendar className="h-4 w-4" />
+            <span>Apr 2025</span>
           </Button>
-          <Button size="sm">
-            <Box className="w-4 h-4 mr-2" /> Create Order
-          </Button>
+          <Button variant="default" size="sm">Generate Report</Button>
         </div>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      
+      {/* Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {metrics.map((metric, index) => (
           <Card key={index}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">
-                {metric.title}
-              </CardTitle>
-              {metric.icon}
+            <CardHeader className="pb-2">
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-sm font-medium text-gray-500">{metric.title}</CardTitle>
+                {metric.icon}
+              </div>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{metric.value}</div>
-              <p className={`text-xs ${metric.change >= 0 ? 'text-green-500' : 'text-red-500'} flex items-center mt-1`}>
-                {metric.change >= 0 ? '↑' : '↓'} {Math.abs(metric.change)}% from last month
-              </p>
+              <div className={`text-xs flex items-center mt-1 ${
+                metric.trend === 'up' 
+                  ? 'text-green-600' 
+                  : metric.trend === 'down' 
+                    ? 'text-red-600' 
+                    : 'text-gray-500'
+              }`}>
+                {metric.trend === 'up' ? '↑' : metric.trend === 'down' ? '↓' : '→'} {metric.change} from last month
+              </div>
             </CardContent>
           </Card>
         ))}
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <Card className="lg:col-span-2">
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle>Production Pipeline</CardTitle>
-              <div className="flex space-x-2">
-                <Button 
-                  variant={view === 'grid' ? 'default' : 'outline'} 
-                  size="sm" 
-                  onClick={() => setView('grid')}
-                >
-                  <Grid className="w-4 h-4" />
-                </Button>
-                <Button 
-                  variant={view === 'timeline' ? 'default' : 'outline'} 
-                  size="sm" 
-                  onClick={() => setView('timeline')}
-                >
-                  <Clock className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-            <CardDescription>
-              Track production status across all processes
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {processes.map((process) => (
-                <div key={process.id} className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium text-gray-900">{process.name}</span>
-                    <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(process.status)}`}>
-                      {process.status.charAt(0).toUpperCase() + process.status.slice(1)}
-                    </span>
+      
+      {/* Main content */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
+          <Tabs defaultValue="orders" className="w-full">
+            <TabsList className="mb-4 grid w-full grid-cols-3">
+              <TabsTrigger value="orders">Orders</TabsTrigger>
+              <TabsTrigger value="patterns">Top Patterns</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="orders" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Upcoming Orders</CardTitle>
+                  <CardDescription>
+                    Orders that require attention in the coming days
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left font-medium py-2">Order ID</th>
+                          <th className="text-left font-medium py-2">Customer</th>
+                          <th className="text-left font-medium py-2">Due Date</th>
+                          <th className="text-left font-medium py-2">Status</th>
+                          <th className="text-right font-medium py-2">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {upcomingOrders.map((order) => (
+                          <tr key={order.id} className="border-b border-gray-100">
+                            <td className="py-3 font-medium">{order.id}</td>
+                            <td className="py-3">{order.customer}</td>
+                            <td className="py-3">{order.date}</td>
+                            <td className="py-3">
+                              <Badge variant={
+                                order.status === 'processing' ? 'default' : 
+                                order.status === 'confirmed' ? 'success' : 'outline'
+                              }>
+                                {order.status}
+                              </Badge>
+                            </td>
+                            <td className="py-3 text-right">{order.amount}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                  <div className="flex items-center space-x-4">
-                    <Progress value={process.progress} className="flex-1" />
-                    <span className="text-sm text-gray-500">{process.progress}%</span>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button variant="ghost" size="sm">Previous</Button>
+                  <Button variant="ghost" size="sm">Next</Button>
+                </CardFooter>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Production Timeline</CardTitle>
+                  <CardDescription>
+                    Current active production stages
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between mb-1 text-sm">
+                        <span>WOODSMAN F Collection - Batch #542</span>
+                        <span>75%</span>
+                      </div>
+                      <Progress value={75} className="h-2" />
+                      <div className="flex justify-between mt-1 text-xs text-gray-500">
+                        <span>Cutting completed</span>
+                        <span>Quality check pending</span>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div className="flex justify-between mb-1 text-sm">
+                        <span>TRACK SKINNY - Batch #328</span>
+                        <span>40%</span>
+                      </div>
+                      <Progress value={40} className="h-2" />
+                      <div className="flex justify-between mt-1 text-xs text-gray-500">
+                        <span>Sewing in progress</span>
+                        <span>Est. completion: Apr 15</span>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div className="flex justify-between mb-1 text-sm">
+                        <span>ARTURO Collection - Batch #217</span>
+                        <span>90%</span>
+                      </div>
+                      <Progress value={90} className="h-2" />
+                      <div className="flex justify-between mt-1 text-xs text-gray-500">
+                        <span>Final inspection</span>
+                        <span>Shipping tomorrow</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Due: {new Date(process.dueDate).toLocaleDateString()}</span>
-                    <Link to="#" className="text-blue-600 hover:underline">View Details</Link>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="patterns" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Top Selling Patterns</CardTitle>
+                  <CardDescription>
+                    Most popular pattern designs over the last {activePeriod} period
+                  </CardDescription>
+                  <div className="flex space-x-1 mt-2">
+                    <Button 
+                      variant={activePeriod === 'daily' ? 'default' : 'outline'} 
+                      size="sm"
+                      onClick={() => setActivePeriod('daily')}
+                    >
+                      Daily
+                    </Button>
+                    <Button 
+                      variant={activePeriod === 'weekly' ? 'default' : 'outline'} 
+                      size="sm"
+                      onClick={() => setActivePeriod('weekly')}
+                    >
+                      Weekly
+                    </Button>
+                    <Button 
+                      variant={activePeriod === 'monthly' ? 'default' : 'outline'} 
+                      size="sm"
+                      onClick={() => setActivePeriod('monthly')}
+                    >
+                      Monthly
+                    </Button>
                   </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Active Orders</CardTitle>
-            <CardDescription>
-              Orders currently in progress
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {activeOrders.map((order, index) => (
-                <div key={order.id} className={`p-3 rounded-lg ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold text-gray-900">{order.id}</span>
-                    <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(order.status)}`}>
-                      {order.status}
-                    </span>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left font-medium py-2">Pattern Name</th>
+                          <th className="text-left font-medium py-2">Category</th>
+                          <th className="text-center font-medium py-2">Sales</th>
+                          <th className="text-right font-medium py-2">Revenue</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {topPatterns.map((pattern, index) => (
+                          <tr key={index} className="border-b border-gray-100">
+                            <td className="py-3 font-medium">{pattern.name}</td>
+                            <td className="py-3">{pattern.category}</td>
+                            <td className="py-3 text-center">{pattern.sales}</td>
+                            <td className="py-3 text-right">{pattern.revenue}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                  <p className="text-sm text-gray-600">{order.customer}</p>
-                  <div className="flex justify-between mt-1 text-sm">
-                    <span className="text-gray-500">Product: {order.product}</span>
-                    <span className="text-gray-500">Qty: {order.quantity}</span>
+                </CardContent>
+                <CardFooter>
+                  <Button variant="outline" size="sm" className="w-full">
+                    View All Patterns
+                  </Button>
+                </CardFooter>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Pattern Categories Distribution</CardTitle>
+                  <CardDescription>
+                    Breakdown of pattern categories by sales volume
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex justify-center">
+                  <div className="h-[200px] w-[200px] flex items-center justify-center">
+                    <FiPieChart className="h-full w-full text-gray-200" />
+                    <div className="absolute text-center">
+                      <div className="text-sm font-medium">Total Patterns</div>
+                      <div className="text-2xl font-bold">5,247</div>
+                    </div>
                   </div>
-                  <div className="flex justify-between mt-1 text-sm">
-                    <span className="text-gray-500">Delivery: {new Date(order.delivery).toLocaleDateString()}</span>
-                    <Link to="#" className="text-blue-600 hover:underline text-xs">Details</Link>
+                </CardContent>
+                <CardFooter className="flex flex-wrap gap-2 justify-center">
+                  <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100 border-blue-200">
+                    Menswear: 32%
+                  </Badge>
+                  <Badge className="bg-green-100 text-green-800 hover:bg-green-100 border-green-200">
+                    Womenswear: 45%
+                  </Badge>
+                  <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 border-purple-200">
+                    Streetwear: 18%
+                  </Badge>
+                  <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100 border-amber-200">
+                    Other: 5%
+                  </Badge>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="analytics" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Platform Performance</CardTitle>
+                  <CardDescription>
+                    Key metrics across all components of the platform
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="h-[300px] flex items-center justify-center">
+                  <div className="w-full">
+                    <FiBarChart2 className="h-full w-full text-gray-200" />
+                    <div className="text-center text-gray-500 mt-4">
+                      Interactive analytics visualization
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-          <CardFooter className="border-t pt-4 pb-0">
-            <Button variant="ghost" className="w-full text-blue-600" size="sm">
-              View All Orders
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Access</CardTitle>
-            <CardDescription>
-              Navigate to key platform features
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
-            <Button variant="outline" className="h-24 flex flex-col justify-center hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200">
-              <Layers className="h-6 w-6 mb-2" />
-              <span>Material Library</span>
-            </Button>
-            <Button variant="outline" className="h-24 flex flex-col justify-center hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200">
-              <ShoppingBag className="h-6 w-6 mb-2" />
-              <span>Marketplace</span>
-            </Button>
-            <Button variant="outline" className="h-24 flex flex-col justify-center hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200">
-              <Scissors className="h-6 w-6 mb-2" />
-              <span>Patterns</span>
-            </Button>
-            <Button variant="outline" className="h-24 flex flex-col justify-center hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200">
-              <Truck className="h-6 w-6 mb-2" />
-              <span>Logistics</span>
-            </Button>
-            <Button variant="outline" className="h-24 flex flex-col justify-center hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200">
-              <FileText className="h-6 w-6 mb-2" />
-              <span>BOM Builder</span>
-            </Button>
-            <Button variant="outline" className="h-24 flex flex-col justify-center hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200">
-              <Users className="h-6 w-6 mb-2" />
-              <span>Supplier Network</span>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <Tabs defaultValue="analytics">
-              <div className="flex justify-between items-center">
-                <CardTitle>Business Intelligence</CardTitle>
-                <TabsList>
-                  <TabsTrigger value="analytics">Analytics</TabsTrigger>
-                  <TabsTrigger value="reports">Reports</TabsTrigger>
-                  <TabsTrigger value="forecast">Forecast</TabsTrigger>
-                </TabsList>
-              </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>User Engagement</CardTitle>
+                  <CardDescription>
+                    Activity metrics across manufacturers, designers, and brands
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between mb-1 text-sm">
+                        <span>Daily Active Users</span>
+                        <span>832</span>
+                      </div>
+                      <Progress value={83} className="h-2" />
+                      <div className="flex justify-between mt-1 text-xs text-gray-500">
+                        <span>+12% from last week</span>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div className="flex justify-between mb-1 text-sm">
+                        <span>New Registrations</span>
+                        <span>47</span>
+                      </div>
+                      <Progress value={47} className="h-2" />
+                      <div className="flex justify-between mt-1 text-xs text-gray-500">
+                        <span>+5% from last week</span>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div className="flex justify-between mb-1 text-sm">
+                        <span>Subscription Renewals</span>
+                        <span>95%</span>
+                      </div>
+                      <Progress value={95} className="h-2" />
+                      <div className="flex justify-between mt-1 text-xs text-gray-500">
+                        <span>+2% from last month</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
+        
+        <div className="space-y-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>System Status</CardTitle>
               <CardDescription>
-                Track key performance metrics across your supply chain
+                Current status of all platform components
               </CardDescription>
-            </Tabs>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-center p-6 border-2 border-dashed border-gray-200 rounded-lg">
-              <div className="text-center">
-                <BarChart2 className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-1">Analytics Dashboard</h3>
-                <p className="text-gray-500 mb-4 max-w-md">
-                  Track performance metrics, analyze trends, and make data-driven decisions with our comprehensive analytics tools
-                </p>
-                <Button>
-                  <Maximize className="h-4 w-4 mr-2" />
-                  Open Analytics Dashboard
-                </Button>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {systemComponents.map((component) => (
+                  <Link to={component.path} key={component.id} className="block">
+                    <div className="flex items-start p-3 rounded-lg border hover:bg-gray-50 transition-colors">
+                      <div className="mr-4 mt-0.5 text-gray-500">
+                        {component.icon}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium">{component.name}</h4>
+                          <Badge variant={
+                            component.status === 'operational' ? 'success' :
+                            component.status === 'degraded' ? 'warning' :
+                            component.status === 'maintenance' ? 'outline' : 'destructive'
+                          }>
+                            {component.status}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-500 mt-1">{component.description}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>
+                Latest events across the platform
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-start">
+                  <div className="mr-4 mt-0.5">
+                    <div className="w-2 h-2 rounded-full bg-green-500 ring-4 ring-green-100" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">New manufacturer onboarded</p>
+                    <p className="text-xs text-gray-500">FashionTech Ltd. joined the platform</p>
+                    <p className="text-xs text-gray-400 mt-1">10 minutes ago</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="mr-4 mt-0.5">
+                    <div className="w-2 h-2 rounded-full bg-blue-500 ring-4 ring-blue-100" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Order status updated</p>
+                    <p className="text-xs text-gray-500">Order #OR-8547 marked as confirmed</p>
+                    <p className="text-xs text-gray-400 mt-1">25 minutes ago</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="mr-4 mt-0.5">
+                    <div className="w-2 h-2 rounded-full bg-purple-500 ring-4 ring-purple-100" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">New pattern uploaded</p>
+                    <p className="text-xs text-gray-500">WOODSMAN Summer Collection added</p>
+                    <p className="text-xs text-gray-400 mt-1">1 hour ago</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="mr-4 mt-0.5">
+                    <div className="w-2 h-2 rounded-full bg-amber-500 ring-4 ring-amber-100" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">System maintenance completed</p>
+                    <p className="text-xs text-gray-500">All services running normally</p>
+                    <p className="text-xs text-gray-400 mt-1">2 hours ago</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button variant="ghost" size="sm" className="w-full">
+                View All Activity
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
       </div>
     </div>
   );
