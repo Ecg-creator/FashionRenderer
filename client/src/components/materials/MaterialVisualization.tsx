@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Slider } from "../ui/slider";
 import { MaterialType } from "../../types/material";
+import * as THREE from 'three';
 import { 
   Fullscreen, 
   ZoomIn, 
@@ -14,7 +15,7 @@ import {
   Sun, 
   Moon, 
   Palette, 
-  Tshirt, 
+  Shirt, 
   Scissors, 
   Minimize 
 } from "lucide-react";
@@ -300,7 +301,7 @@ export function MaterialVisualization({ material }: MaterialVisualizationProps) 
               Visualize
             </TabsTrigger>
             <TabsTrigger value="applications">
-              <Tshirt className="h-4 w-4 mr-1" />
+              <Shirt className="h-4 w-4 mr-1" />
               Applications
             </TabsTrigger>
             <TabsTrigger value="details">

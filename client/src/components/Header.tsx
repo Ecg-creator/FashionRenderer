@@ -14,6 +14,7 @@ const Header = () => {
   const isHome = location.pathname === '/';
   const isMarketplace = location.pathname.includes('/marketplace');
   const isPatterns = location.pathname.includes('/patterns');
+  const isMaterials = location.pathname.includes('/materials');
   const isShowcase = location.pathname.includes('/showcase');
   
   return (
@@ -58,7 +59,7 @@ const Header = () => {
           </div>
           
           <NavLink to="#" label="Collections" />
-          <NavLink to="#" label="Materials" />
+          <NavLink to="/materials" label="Materials" active={isMaterials} />
           <NavLink to="/showcase" label="3D Showcase" active={isShowcase} />
         </nav>
       </div>

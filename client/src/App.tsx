@@ -18,6 +18,7 @@ import { OrderDetail } from './components/marketplace/OrderDetail';
 import { OrderRequestList } from './components/marketplace/OrderRequestList';
 import { OrderRequestDetail } from './components/marketplace/OrderRequestDetail';
 import { PatternsPage } from './components/patterns/PatternsPage';
+import { MaterialLibrary } from './components/materials/MaterialLibrary';
 import { GameShowcaseWithUI } from './components/game/GameShowcase';
 import NotFound from './pages/not-found';
 import '@fontsource/inter';
@@ -85,6 +86,9 @@ function App() {
             
             {/* Patterns routes */}
             <Route path="/patterns/*" element={<PatternsPage />} />
+            
+            {/* Material Library route */}
+            <Route path="/materials" element={<MaterialLibrary />} />
             
             {/* Game Showcase route */}
             <Route path="/showcase" element={<GameShowcaseWithUI />} />
